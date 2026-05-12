@@ -35,7 +35,8 @@ function GlassShape({ scrollYProgress }) {
         <icosahedronGeometry args={[1, 0]} />
         <MeshTransmissionMaterial
           backside
-          samples={16}
+          samples={8} /* Reduced from 16 for better performance */
+          resolution={512} /* Lower internal resolution for the refraction */
           thickness={0.5}
           chromaticAberration={0.05}
           anisotropy={0.1}
@@ -111,7 +112,7 @@ export default function LandingPage() {
         {/* Sticky Background Container */}
         <div className="sticky-background">
           <div className="canvas-container">
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+            <Canvas camera={{ position: [0, 0, 5], fov: 45 }} dpr={[1, 1.5]}>
               <color attach="background" args={['#000000']} />
               <ambientLight intensity={0.5} />
               <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
@@ -150,7 +151,7 @@ export default function LandingPage() {
 
           {/* Section 2 */}
           <section className="scroll-section">
-            <motion.div style={{ opacity: opacity2, y: y1, scale: scale2, textContent: y1 }} className="text-content">
+            <motion.div style={{ opacity: opacity2, y: y1, scale: scale2 }} className="text-content">
               <h3 className="serif-title">Explore My Work</h3>
               <p className="subtitle">A curated selection of my work, showcasing my skills and creativity.</p>
             </motion.div>
