@@ -1,10 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshTransmissionMaterial, Environment, ContactShadows } from '@react-three/drei';
+import Lenis from 'lenis';
 
-
-function GlassShape({ scrollYProgress }) {
+function GlassShape({ scrollProgress }) {
   const meshRef = useRef();
 
   // The shape rotates constantly on its axis
@@ -16,9 +16,8 @@ function GlassShape({ scrollYProgress }) {
   });
 
   // Scale in/out between 0.3 and 0.7
-  // Let's make it start appearing slightly earlier for better flow
   const scale = useTransform(
-    scrollYProgress,
+    scrollProgress,
     [0.15, 0.35, 0.65, 0.85],
     [0, 2.8, 2.8, 0]
   );
@@ -36,8 +35,8 @@ function GlassShape({ scrollYProgress }) {
         <icosahedronGeometry args={[1, 0]} />
         <MeshTransmissionMaterial
           backside
-          samples={8} /* Reduced from 16 for better performance */
-          resolution={512} /* Lower internal resolution for the refraction */
+          samples={8}
+          resolution={512}
           thickness={0.5}
           chromaticAberration={0.05}
           anisotropy={0.1}
@@ -59,6 +58,18 @@ function GlassShape({ scrollYProgress }) {
 export default function LandingPage() {
   const containerRef = useRef(null);
   const sectionRef = useRef(null);
+
+  // Initialize Lenis smooth scroll
+  useEffect(() => {
+    const lenis = new Lenis();
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+    return () => lenis.destroy();
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -68,11 +79,8 @@ export default function LandingPage() {
   const pathLength = useTransform(scrollYProgress, [0.1, 0.9], [0, 1]);
 
   // Section 1: "Get to Know Me" (Center @ 0.34)
-  const opacity1 = useTransform(
-    scrollYProgress,
-    [0.35, 0.5, 0.6],
-    [0, 1, 1, 0]
-  );
+  // FIX: Array mismatch fixed. Both arrays now have 4 elements.
+  const opacity1 = useTransform(scrollYProgress, [0.35, 0.45, 0.55, 0.65], [0, 1, 1, 0]);
   const scale1 = useTransform(scrollYProgress, [0.15, 0.34, 0.5], [0.8, 1.2, 0.8]);
   const y1 = useTransform(scrollYProgress, [0.15, 0.34, 0.5], [50, 0, -50]);
 
@@ -84,8 +92,6 @@ export default function LandingPage() {
   // Section 3: Call to Action (Center @ 1.0)
   const opacity3 = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
   const y3 = useTransform(scrollYProgress, [0.85, 1], [50, 0]);
-
-
 
   return (
     <>
@@ -128,7 +134,7 @@ export default function LandingPage() {
               <ambientLight intensity={0.5} />
               <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
               <pointLight position={[-10, -10, -10]} intensity={0.5} />
-              <GlassShape scrollYProgress={scrollYProgress} />
+              <GlassShape scrollProgress={scrollYProgress} />
               <Environment preset="city" />
               <ContactShadows position={[0, -2, 0]} opacity={0.5} scale={10} blur={2.5} far={4} />
             </Canvas>
@@ -147,8 +153,6 @@ export default function LandingPage() {
             </svg>
           </div>
         </div>
-
-
 
         {/* Scrollable Content Layers */}
         <div className="content-layers">
