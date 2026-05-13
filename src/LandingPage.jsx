@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshTransmissionMaterial, Environment, ContactShadows } from '@react-three/drei';
 
+
 function GlassShape({ scrollYProgress }) {
   const meshRef = useRef();
 
@@ -57,6 +58,7 @@ function GlassShape({ scrollYProgress }) {
 
 export default function LandingPage() {
   const containerRef = useRef(null);
+  const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -65,18 +67,25 @@ export default function LandingPage() {
   // SVG Line drawing mapped directly to scroll
   const pathLength = useTransform(scrollYProgress, [0.1, 0.9], [0, 1]);
 
-  // Section 1: Intro (0 to 0.15) - Title card vanishes quickly
-  const opacity1 = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-  const y1 = useTransform(scrollYProgress, [0, 0.15], [0, -100]);
+  // Section 1: "Get to Know Me" (Center @ 0.34)
+  const opacity1 = useTransform(
+    scrollYProgress,
+    [0.35, 0.5, 0.6],
+    [0, 1, 1, 0]
+  );
+  const scale1 = useTransform(scrollYProgress, [0.15, 0.34, 0.5], [0.8, 1.2, 0.8]);
+  const y1 = useTransform(scrollYProgress, [0.15, 0.34, 0.5], [50, 0, -50]);
 
-  // Section 2: 3D Object focus (0.2 to 0.6)
-  const opacity2 = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  // Section 2: "Explore My Work" (Center @ 0.68)
+  const opacity2 = useTransform(scrollYProgress, [0.5, 0.68, 0.85], [0, 1, 0]);
+  const scale2 = useTransform(scrollYProgress, [0.5, 0.68, 0.85], [0.8, 1.2, 0.8]);
+  const y2 = useTransform(scrollYProgress, [0.5, 0.68, 0.85], [50, 0, -50]);
 
-  const scale2 = useTransform(scrollYProgress, [0.2, 0.3, 0.5, 0.6], [0.8, 1, 1, 1.2]);
+  // Section 3: Call to Action (Center @ 1.0)
+  const opacity3 = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
+  const y3 = useTransform(scrollYProgress, [0.85, 1], [50, 0]);
 
-  // Section 3: Call to Action (0.65 to 1)
-  const opacity3 = useTransform(scrollYProgress, [0.65, 0.8, 1], [0, 1, 1]);
-  const y3 = useTransform(scrollYProgress, [0.65, 0.8], [100, 0]);
+
 
   return (
     <>
@@ -102,7 +111,9 @@ export default function LandingPage() {
         {/* Scroll Indicator */}
         <div
           className="scroll-indicator"
-          onClick={() => window.scrollBy({ top: 1350, behavior: 'smooth' })}
+          onClick={() =>
+            sectionRef.current?.scrollIntoView({ behavior: 'smooth' })
+          }
         >
           ↓
         </div>
@@ -142,16 +153,18 @@ export default function LandingPage() {
         {/* Scrollable Content Layers */}
         <div className="content-layers">
           {/* Section 1 */}
-          <section className="scroll-section">
-            <motion.div style={{ opacity: opacity1, y: y1 }} className="text-content">
+          <section ref={sectionRef} className="scroll-section">
+            <motion.div style={{ opacity: opacity1, scale: scale1, y: y1 }} className="text-content">
               <h1 className="serif-title">Get to Know Me</h1>
-              <p className="subtitle">I’m a product designer with a passion for building meaningful digital experiences.</p>
+              <p className="subtitle">
+                I’m a product designer with a passion for building meaningful digital experiences.
+              </p>
             </motion.div>
           </section>
 
           {/* Section 2 */}
           <section className="scroll-section">
-            <motion.div style={{ opacity: opacity2, y: y1, scale: scale2 }} className="text-content">
+            <motion.div style={{ opacity: opacity2, scale: scale2, y: y2 }} className="text-content">
               <h3 className="serif-title">Explore My Work</h3>
               <p className="subtitle">A curated selection of my work, showcasing my skills and creativity.</p>
             </motion.div>
