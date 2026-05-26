@@ -4,9 +4,16 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshTransmissionMaterial, Environment, ContactShadows } from '@react-three/drei';
 import Lenis from 'lenis';
 
-function GlassShape({ scrollProgress }) {
+function GlassShape({ scrollProgress, onClick }) {
   const meshRef = useRef();
   const lastScrollVal = useRef(0);
+
+  // Reset body cursor on component unmount
+  useEffect(() => {
+    return () => {
+      document.body.style.cursor = 'auto';
+    };
+  }, []);
 
   // Scale multiplier in/out based on scroll progress
   const scaleMultiplier = useTransform(
@@ -40,7 +47,12 @@ function GlassShape({ scrollProgress }) {
 
   return (
     <Float speed={1.5} rotationIntensity={0.6} floatIntensity={1.2}>
-      <mesh ref={meshRef}>
+      <mesh
+        ref={meshRef}
+        onClick={onClick}
+        onPointerOver={() => { document.body.style.cursor = 'pointer'; }}
+        onPointerOut={() => { document.body.style.cursor = 'auto'; }}
+      >
         <icosahedronGeometry args={[1, 2]} />
         <MeshTransmissionMaterial
           backside
@@ -67,6 +79,8 @@ function GlassShape({ scrollProgress }) {
 export default function LandingPage() {
   const containerRef = useRef(null);
   const sectionRef = useRef(null);
+  const ctaSectionRef = useRef(null);
+  const lenisRef = useRef(null);
 
   // Initialize Lenis smooth scroll
   useEffect(() => {
@@ -81,12 +95,18 @@ export default function LandingPage() {
       infinite: false,
     });
 
+    lenisRef.current = lenis;
+
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
-    return () => lenis.destroy();
+
+    return () => {
+      lenis.destroy();
+      lenisRef.current = null;
+    };
   }, []);
 
   const { scrollYProgress } = useScroll({
@@ -101,6 +121,15 @@ export default function LandingPage() {
     mass: 0.5,
     restDelta: 0.0001
   });
+
+  // Scroll to CTA section using Lenis smooth scroll engine
+  const scrollToCTA = () => {
+    if (lenisRef.current && ctaSectionRef.current) {
+      lenisRef.current.scrollTo(ctaSectionRef.current, { duration: 1.8 });
+    } else {
+      ctaSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   // SVG Line drawing mapped directly to smooth scroll progress
   const pathLength = useTransform(smoothProgress, [0.1, 0.9], [0, 1]);
@@ -161,7 +190,7 @@ export default function LandingPage() {
               <ambientLight intensity={0.5} />
               <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
               <pointLight position={[-10, -10, -10]} intensity={0.5} />
-              <GlassShape scrollProgress={smoothProgress} />
+              <GlassShape scrollProgress={smoothProgress} onClick={scrollToCTA} />
               <Environment preset="city" />
               <ContactShadows position={[0, -2, 0]} opacity={0.5} scale={10} blur={2.5} far={4} />
             </Canvas>
@@ -202,7 +231,7 @@ export default function LandingPage() {
           </section>
 
           {/* Section 3 */}
-          <section className="scroll-section bottom-align">
+          <section ref={ctaSectionRef} className="scroll-section bottom-align">
             <motion.div style={{ opacity: opacity3, scale: scale3, y: y3 }} className="text-content cta-section">
               <h1 className="serif-title">Explore My Work.</h1>
               <button
