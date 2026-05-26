@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshTransmissionMaterial, Environment, ContactShadows } from '@react-three/drei';
 import Lenis from 'lenis';
+import { Grow } from '@mui/material';
 
 function GlassShape({ scrollProgress, onClick }) {
   const meshRef = useRef();
@@ -77,6 +78,7 @@ function GlassShape({ scrollProgress, onClick }) {
 }
 
 export default function LandingPage() {
+  const [showHero, setShowHero] = useState(false);
   const containerRef = useRef(null);
   const sectionRef = useRef(null);
   const ctaSectionRef = useRef(null);
@@ -93,7 +95,12 @@ export default function LandingPage() {
       wheelMultiplier: 1,
       touchMultiplier: 1.5,
       infinite: false,
-    });
+    }
+    );
+
+    setTimeout(() => {
+      setShowHero(true);
+    }, 1000);
 
     lenisRef.current = lenis;
 
@@ -163,12 +170,14 @@ export default function LandingPage() {
           zIndex: 20
         }}
       >
-        <div className="text-content" style={{ textAlign: 'center' }}>
-          <h1 className="serif-title">Daniel Patino.</h1>
-          <p className="subtitle">
-            A multi-disciplinary tech professional with experience in support and client success.
-          </p>
-        </div>
+        <Grow in={showHero} timeout={1000}>
+          <div className="text-content" style={{ textAlign: 'center' }}>
+            <h1 className="serif-title">Daniel Patino.</h1>
+            <p className="subtitle">
+              A multi-disciplinary tech professional with experience in support and client success.
+            </p>
+          </div>
+        </Grow>
 
         {/* Scroll Indicator */}
         <div
@@ -214,18 +223,27 @@ export default function LandingPage() {
         <div className="content-layers">
           {/* Section 1 */}
           <section ref={sectionRef} className="scroll-section">
-            <motion.div style={{ opacity: opacity1, scale: scale1, y: y1 }} className="text-content">
+            <motion.div style={{ opacity: opacity1, scale: scale1, y: y1 }}
+              className="text-content">
               <h1 className="serif-title">Customer Success & Technical Support</h1>
+              <img src="/images/email.png" alt="Customer Service" className="customer-service-image" />
+              <img src="/images/checkmark.png" alt="Customer Service" className="customer-service-image" />
+              <img src="/images/education.png" alt="Customer Service" className="customer-service-image" />
               <p className="subtitle">
                 I have experience in customer service, tech support, and client success roles, helping users resolve issues and significantly improve their experience.
               </p>
             </motion.div>
+
+
           </section>
 
           {/* Section 2 */}
           <section className="scroll-section">
             <motion.div style={{ opacity: opacity2, scale: scale2, y: y2 }} className="text-content">
               <h3 className="serif-title">Technology & Development</h3>
+              <img src="/images/github.png" alt="Customer Service" className="customer-service-image" />
+              <img src="/images/checkmark.png" alt="Customer Service" className="customer-service-image" />
+              <img src="/images/experience.png" alt="Customer Service" className="customer-service-image" />
               <p className="subtitle">I have experience working across different tools, systems, CRMs, and digital solutions to build, troubleshoot, and improve user experiences. My background includes web development, problem-solving, and adapting quickly to new technologies and workflows.</p>
             </motion.div>
           </section>
@@ -238,7 +256,7 @@ export default function LandingPage() {
                 className="cta-button"
                 onClick={() => window.location.href = 'https://danielpatinoportfolio.onrender.com'}
               >
-                Visit My Portfolio
+                Open Portfolio
               </button>
             </motion.div>
           </section>
