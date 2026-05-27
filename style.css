@@ -241,6 +241,15 @@ body {
 }
 
 
+.image-container {
+  display: flex;
+  gap: 20px;
+  /* Smooth 3-color dark gradient angling from top-left to bottom-right */
+  background: linear-gradient(135deg, #1d1d22 0%, #1d2837 50%, #0d0e12 100%);
+  /* border-radius: 15px; */
+  justify-content: center;
+  align-items: center;
+}
 
 .customer-service-image {
   height: 50px;

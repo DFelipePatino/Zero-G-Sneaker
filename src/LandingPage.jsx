@@ -226,9 +226,13 @@ export default function LandingPage() {
             <motion.div style={{ opacity: opacity1, scale: scale1, y: y1 }}
               className="text-content">
               <h1 className="serif-title">Customer Success & Technical Support</h1>
-              <img src="/images/email.png" alt="Customer Service" className="customer-service-image" />
-              <img src="/images/checkmark.png" alt="Customer Service" className="customer-service-image" />
-              <img src="/images/education.png" alt="Customer Service" className="customer-service-image" />
+              <div
+                className="image-container"
+              >
+                <img src="/images/email.png" alt="Customer Service" className="customer-service-image" />
+                <img src="/images/checkmark.png" alt="Customer Service" className="customer-service-image" />
+                <img src="/images/education.png" alt="Customer Service" className="customer-service-image" />
+              </div>
               <p className="subtitle">
                 I have experience in customer service, tech support, and client success roles, helping users resolve issues and significantly improve their experience.
               </p>
@@ -241,9 +245,13 @@ export default function LandingPage() {
           <section className="scroll-section">
             <motion.div style={{ opacity: opacity2, scale: scale2, y: y2 }} className="text-content">
               <h3 className="serif-title">Technology & Development</h3>
-              <img src="/images/github.png" alt="Customer Service" className="customer-service-image" />
-              <img src="/images/checkmark.png" alt="Customer Service" className="customer-service-image" />
-              <img src="/images/experience.png" alt="Customer Service" className="customer-service-image" />
+              <div
+                className="image-container"
+              >
+                <img src="/images/github.png" alt="Customer Service" className="customer-service-image" />
+                <img src="/images/checkmark.png" alt="Customer Service" className="customer-service-image" />
+                <img src="/images/experience.png" alt="Customer Service" className="customer-service-image" />
+              </div>
               <p className="subtitle">I have experience working across different tools, systems, CRMs, and digital solutions to build, troubleshoot, and improve user experiences. My background includes web development, problem-solving, and adapting quickly to new technologies and workflows.</p>
             </motion.div>
           </section>
